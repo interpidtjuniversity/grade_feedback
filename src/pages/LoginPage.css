@@ -1,0 +1,26 @@
+/* src/LoginPage.css */
+@keyframes backgroundAnimation {
+    0% { background-image: url('../images/back_first.png'); }
+    100% { background-image: url('../images/back_second.png'); }
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    animation: backgroundAnimation 10s infinite; /* 15秒轮播 */
+    background-size: cover;
+    background-position: center;
+}
+
+.login-card {
+    width: 400px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.login-button {
+    width: 100%;
+    border-radius: 25px;
+}
