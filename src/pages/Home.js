@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
+import { MailOutlined, SettingOutlined } from '@ant-design/icons';
 import {Layout, Menu, theme, Button} from 'antd';
 import FeedBackListPage from "./FeedBackListPage";
+import PersonalPage from "./PersonalPage";
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
@@ -21,18 +22,18 @@ const items = [
         label: '个人管理',
     }
 ];
-const levelKeys = {
-    '1':1,
-    '2':1
-}
+
 const Home = () => {
     const [collapsed, setCollapsed] = useState(false);
+    // 默认展示反馈列表
+    const [componentKey, setComponentKey] = useState('1');
+
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
     const onClick = (item) => {
-        console.log(item);
+        setComponentKey(item.key);
     }
 
 
@@ -70,7 +71,8 @@ const Home = () => {
                     />
                 </Header>
                 <Content>
-                    <FeedBackListPage/>
+                    {componentKey === '1' && <FeedBackListPage/>}
+                    {componentKey === '2' && <PersonalPage/>}
                 </Content>
             </Layout>
         </Layout>

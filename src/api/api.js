@@ -4,6 +4,10 @@ export function API_Login(params, doSuccess) {
     post("/grade_feedback/api/login", params, doSuccess)
 }
 
+export function API_UpdatePassWord(params, doSuccess, doFailure) {
+    post("/grade_feedback/api/updatePassword", params, doSuccess, doFailure)
+}
+
 export function API_FeedBackList(data, doSuccess) {
     post("/grade_feedback/api/feedBackList", data, doSuccess)
 }
@@ -15,7 +19,6 @@ export function API_FeedBack(data, doSuccess, doFailure) {
 export function API_CancelFeedBack(data, doSuccess, doFailure) {
     post("/grade_feedback/api/cancelFeedBack", data, doSuccess, doFailure)
 }
-
 
 export function API_Test(data, doSuccess) {
     post("/grade_feedback/api/test", data, doSuccess)

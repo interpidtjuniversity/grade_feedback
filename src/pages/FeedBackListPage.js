@@ -1,6 +1,6 @@
 import {API_CancelFeedBack, API_CheckSession, API_FeedBack, API_FeedBackList} from "../api/api";
 import { PlusOutlined } from '@ant-design/icons';
-import { Table, Space, Tag, Drawer, Upload, Image, Input, Col, Row, Card, Button} from "antd";
+import { Table, Space, Tag, Drawer, Upload, Image, Input, Col, Row, Card, Button, message} from "antd";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import React from "react"
@@ -63,10 +63,13 @@ const FeedBackListPage = () =>  {
             examName: record.examName,
         }, (data)=>{
             if (data === true) {
-                // 取消反馈成功 弹窗
-                // 刷新列表数据
-                reloadFeedBackList();
+                message.success('取消反馈成功');
+            } else {
+                message.success('取消反馈失败');
             }
+            reloadFeedBackList();
+        }, (error) => {
+            message.error("取消反馈失败");
         });
     }
 
@@ -144,6 +147,9 @@ const FeedBackListPage = () =>  {
                 urlMap[fileId] = data
                 setFileList(fileList);
                 setUrlMap(urlMap);
+                message.success('上传成功');
+            } else {
+                message.error('上传失败');
             }
         })
     }
@@ -164,9 +170,11 @@ const FeedBackListPage = () =>  {
             images: images,
         }, (data)=>{
             closeDrawer();
+            message.success('反馈成功');
             reloadFeedBackList();
         }, () => {
             closeDrawer();
+            message.error('反馈失败');
             reloadFeedBackList();
         })
     }
@@ -198,9 +206,12 @@ const FeedBackListPage = () =>  {
             title: '测试名称',
             dataIndex: 'examName',
             key: 'examName',
-            render: (_, record) => <a onClick={() => {
-                window.open(record.examUrl, '_blank');
-            }}>{record.examName}</a>,
+            render: (_, record) =>
+                <Tag color="cyan" onClick={() => {
+                    message.warning("暂不支持,敬请期待");
+                }}>
+                    {record.examName}
+                </Tag>,
         },
         {
             title: '反馈',
@@ -230,7 +241,7 @@ const FeedBackListPage = () =>  {
                         record.feedbackStatus === '未反馈' ?
                             <Space direction="horizontal" size="middle">
                                 <a onClick={() => {
-                                    reviewFeedBack(record);
+                                    message.warning("暂不支持,敬请期待");
                                 }}>查看试卷</a>
 
                                 <a onClick={() => {

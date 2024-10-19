@@ -1,7 +1,7 @@
 // src/LoginPage.js
 import { API_Login} from "../api/api";
 import React from 'react';
-import { Form, Input, Button, Card } from 'antd'; // Ant Design 示例
+import { Form, Input, Button, Card, message } from 'antd'; // Ant Design 示例
 import './LoginPage.css'; // 自定义样式
 import { useNavigate } from 'react-router-dom';
 
@@ -12,7 +12,10 @@ const LoginPage = () => {
         API_Login(values, (data) => {
             if (data.code === "100") {
                 localStorage.setItem("token", data.token);
+                localStorage.setItem("studentId", values.studentId);
                 navigate('/home', {replace: true})
+            } else {
+                message.error(data.message);
             }
         });
     };
