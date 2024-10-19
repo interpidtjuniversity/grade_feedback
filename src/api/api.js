@@ -4,9 +4,18 @@ export function API_Login(params, doSuccess) {
     post("/grade_feedback/api/login", params, doSuccess)
 }
 
-export function API_Record_List(data, doSuccess) {
-    post("/grade_feedback/api/recordList", data, doSuccess)
+export function API_FeedBackList(data, doSuccess) {
+    post("/grade_feedback/api/feedBackList", data, doSuccess)
 }
+
+export function API_FeedBack(data, doSuccess, doFailure) {
+    post("/grade_feedback/api/feedback", data, doSuccess, doFailure)
+}
+
+export function API_CancelFeedBack(data, doSuccess, doFailure) {
+    post("/grade_feedback/api/cancelFeedBack", data, doSuccess, doFailure)
+}
+
 
 export function API_Test(data, doSuccess) {
     post("/grade_feedback/api/test", data, doSuccess)

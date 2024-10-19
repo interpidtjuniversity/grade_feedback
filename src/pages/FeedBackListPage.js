@@ -1,11 +1,13 @@
-import { API_CheckSession} from "../api/api";
+import {API_CancelFeedBack, API_CheckSession, API_FeedBack, API_FeedBackList} from "../api/api";
 import { PlusOutlined } from '@ant-design/icons';
 import { Table, Space, Tag, Drawer, Upload, Image, Input, Col, Row, Card, Button} from "antd";
 import {useNavigate} from "react-router-dom";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import React from "react"
 
 import { API_Upload} from "../api/api";
+
+import {generateRandomString} from "../util/StringUtil"
 
 const { TextArea } = Input;
 
@@ -31,22 +33,67 @@ const FeedBackListPage = () =>  {
                 navigate('/login', {replace: true})
             }
         })
+
+
+        API_FeedBackList({}, (data) => {
+            setFeedBackData(data);
+        })
+
+
     }, []);
 
-    const feedBack = (record) => {
-        setOpen(true)
-        setLoading(true)
-        drawerData.current = record
+    const reloadFeedBackList = () => {
+        API_FeedBackList({}, (data) => {
+            setFeedBackData(data);
+        })
+        setReloadKey(reloadKey + 1);
+    }
+
+    const openFeedBack = (record) => {
+        setOpen(true);
+        setLoading(true);
+        drawerData.current = record;
         setLoading(false);
     }
     const cancelFeedBack = (record) => {
-        console.log(record);
+        API_CancelFeedBack({
+            id: record.id,
+            studentId: record.studentId,
+            studentName: record.studentName,
+            examName: record.examName,
+        }, (data)=>{
+            if (data === true) {
+                // 取消反馈成功 弹窗
+                // 刷新列表数据
+                reloadFeedBackList();
+            }
+        });
     }
 
-    const review = (record) => {
-        console.log(record);
+    const reviewFeedBack = (record) => {
+        setOpen(true);
+        setLoading(true);
+        drawerData.current = record;
+        setFeedbackText(record.feedbackText);
+        var images = []
+        for (let i = 0; i < record.images.length; i++) {
+            let imageId = generateRandomString(10) + Date.now();
+            images.push(
+                {
+                    uid: imageId,
+                    status: 'done',
+                    url: record.images[i],
+                });
+            urlMap[imageId] = record.images[i];
+            setUrlMap(urlMap);
+        }
+        setFileList(images)
+        setLoading(false);
     }
-
+    // 反馈列表重加载
+    const [reloadKey, setReloadKey] = useState(0);
+    // 反馈列表
+    const [feedBackData, setFeedBackData] = React.useState([]);
     // 反馈弹窗
     const [open, setOpen] = React.useState(false);
     const [loading, setLoading] = React.useState(true);
@@ -55,11 +102,11 @@ const FeedBackListPage = () =>  {
     // 反馈内容
     const [feedbackText, setFeedbackText] = React.useState("");
     // 图片上传
-    const [urlMap, setUrlMap] = React.useState({})
+    const [urlMap, setUrlMap] = React.useState({});
     const [previewOpen, setPreviewOpen] = React.useState(false);
     const [previewImage, setPreviewImage] = React.useState('');
     const [previewTitle, setPreviewTitle] = React.useState('');
-    const [fileList, setFileList] = React.useState([])
+    const [fileList, setFileList] = React.useState([]);
     const handlePreview = async (file) => {
         if (!file.url && !file.preview) {
             file.preview = await getBase64(file.originFileObj);
@@ -102,19 +149,26 @@ const FeedBackListPage = () =>  {
     }
 
     const submitForm = () => {
-        console.log(drawerData.current.id);
-        console.log(drawerData.current.studentId);
-        console.log(drawerData.current.studentName);
-        console.log(drawerData.current.examName);
-        console.log(feedbackText);
-
         var images = []
         for (let i = 0; i < fileList.length; i++) {
             if (urlMap[fileList[i].uid] !== undefined) {
                 images.push(urlMap[fileList[i].uid]);
             }
         }
-        console.log(images);
+        API_FeedBack({
+            id: parseInt(drawerData.current.id),
+            studentId: drawerData.current.studentId,
+            studentName: drawerData.current.studentName,
+            examName: drawerData.current.examName,
+            feedbackText: feedbackText,
+            images: images,
+        }, (data)=>{
+            closeDrawer();
+            reloadFeedBackList();
+        }, () => {
+            closeDrawer();
+            reloadFeedBackList();
+        })
     }
 
     const closeDrawer = () => {
@@ -150,18 +204,18 @@ const FeedBackListPage = () =>  {
         },
         {
             title: '反馈',
-            key: 'feedBackStatus',
-            dataIndex: 'feedBackStatus',
+            key: 'feedbackStatus',
+            dataIndex: 'feedbackStatus',
             render: (_, record ) => (
                 <>
                     {
-                        record.feedBackStatus === '未反馈' ?
+                        record.feedbackStatus === '未反馈' ?
                             <Tag color="red">
-                                {record.feedBackStatus}
+                                {record.feedbackStatus}
                             </Tag>
                             :
                             <Tag color="green">
-                                {record.feedBackStatus}
+                                {record.feedbackStatus}
                             </Tag>
                     }
                 </>
@@ -173,21 +227,21 @@ const FeedBackListPage = () =>  {
             render: (_, record) => (
                 <>
                     {
-                        record.feedBackStatus === '未反馈' ?
+                        record.feedbackStatus === '未反馈' ?
                             <Space direction="horizontal" size="middle">
                                 <a onClick={() => {
-                                    review(record);
-                                }}>查看</a>
+                                    reviewFeedBack(record);
+                                }}>查看试卷</a>
 
                                 <a onClick={() => {
-                                    feedBack(record);
+                                    openFeedBack(record);
                                 }}>反馈</a>
                             </Space>
                             :
                             <Space direction="horizontal" size="middle">
                                 <a onClick={() => {
-                                    review(record);
-                                }}>查看</a>
+                                    reviewFeedBack(record);
+                                }}>反馈详情</a>
 
                                 <a onClick={() => {
                                     cancelFeedBack(record);
@@ -200,44 +254,9 @@ const FeedBackListPage = () =>  {
         },
     ];
 
-    const data = [
-        {
-            id: 1,
-            studentName: '崔垚',
-            studentId: '20241878',
-            examName: '7.2前测',
-            examUrl: 'https://www.baidu.com',
-            feedBackStatus: '未反馈',
-        },
-        {
-            id: 2,
-            studentName: '崔垚',
-            studentId: '20241878',
-            examName: '7.2后测',
-            examUrl: 'https://www.baidu.com',
-            feedBackStatus: '已反馈',
-        },
-        {
-            id: 3,
-            studentName: '崔垚',
-            studentId: '20241878',
-            examName: '7.4前测',
-            examUrl: 'https://www.baidu.com',
-            feedBackStatus: '未反馈',
-        },
-        {
-            id: 4,
-            studentName: '崔垚',
-            studentId: '20241878',
-            examName: '7.4后测',
-            examUrl: 'https://www.baidu.com',
-            feedBackStatus: '已反馈',
-        },
-    ];
-
     return (
         <div>
-            <Table columns={columns} dataSource={data} rowKey={'id'} />
+            <Table key={reloadKey} columns={columns} dataSource={feedBackData} rowKey={'id'} />
             <Drawer
                 width="75%"
                 closable
