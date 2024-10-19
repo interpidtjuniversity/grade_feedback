@@ -27,6 +27,16 @@ const FeedBackListPage = () =>  {
         API_CheckSession({}, (data) => {
             if (data === false) {
                 navigate('/login', {replace: true})
+            } else {
+                API_FeedBackList({}, (data) => {
+                    if (data.success === true) {
+                        setFeedBackData(data.data);
+                    } else {
+                        message.error(data.message);
+                    }
+                }, (error) => {
+                    message.error(error);
+                })
             }
         }, (err) => {
             if (err !== null) {
@@ -34,17 +44,17 @@ const FeedBackListPage = () =>  {
             }
         })
 
-
-        API_FeedBackList({}, (data) => {
-            setFeedBackData(data);
-        })
-
-
     }, []);
 
     const reloadFeedBackList = () => {
         API_FeedBackList({}, (data) => {
-            setFeedBackData(data);
+            if (data.success === true) {
+                setFeedBackData(data.data);
+            } else {
+                message.error(data.message);
+            }
+        }, (error) => {
+            message.error(error);
         })
         setReloadKey(reloadKey + 1);
     }
@@ -62,14 +72,14 @@ const FeedBackListPage = () =>  {
             studentName: record.studentName,
             examName: record.examName,
         }, (data)=>{
-            if (data === true) {
+            if (data.data === true && data.success === true) {
                 message.success('取消反馈成功');
-            } else {
-                message.success('取消反馈失败');
+            } else if (data.success === false || data.data === false) {
+                message.error('取消反馈失败' + data.message);
             }
             reloadFeedBackList();
         }, (error) => {
-            message.error("取消反馈失败");
+            message.error("取消反馈失败" + error.message);
         });
     }
 
@@ -137,19 +147,19 @@ const FeedBackListPage = () =>  {
     const handleUpload = (file) => {
         let fileId = file.file.uid
         API_Upload(file, (data) => {
-            if (data !== null) {
+            if (data.success === true && data.data !== null) {
                 for (let i = 0; i < fileList.length; i++) {
                     if (fileList[i].uid === fileId) {
                         fileList[i].status = 'done';
                     }
                 }
                 // 保存上传成功后的文件oss的url
-                urlMap[fileId] = data
+                urlMap[fileId] = data.data
                 setFileList(fileList);
                 setUrlMap(urlMap);
                 message.success('上传成功');
             } else {
-                message.error('上传失败');
+                message.error('上传失败' + data.message);
             }
         })
     }
@@ -169,9 +179,13 @@ const FeedBackListPage = () =>  {
             feedbackText: feedbackText,
             images: images,
         }, (data)=>{
-            closeDrawer();
-            message.success('反馈成功');
-            reloadFeedBackList();
+            if (data.success === true && data.data === true) {
+                closeDrawer();
+                message.success('反馈成功');
+                reloadFeedBackList();
+            } else {
+                message.error('反馈失败' + data.message);
+            }
         }, () => {
             closeDrawer();
             message.error('反馈失败');
