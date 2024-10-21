@@ -369,7 +369,7 @@ const FeedBackListPage = () =>  {
                                 }}
                             >
                                 <Row>
-                                    <Tag color="green">反馈信息</Tag>
+                                    <Tag color="green">反馈信息(可不填)</Tag>
                                 </Row>
                                 <Row>
                                     <TextArea
@@ -392,7 +392,7 @@ const FeedBackListPage = () =>  {
                                 }}
                             >
                                 <Row>
-                                    <Tag color="green">上传凭证</Tag>
+                                    <Tag color="green">上传凭证(可不传)</Tag>
                                 </Row>
                                 <Row>
                                     <Upload
