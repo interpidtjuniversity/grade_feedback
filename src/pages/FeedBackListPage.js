@@ -375,7 +375,8 @@ const FeedBackListPage = () =>  {
                                     <TextArea
                                         value={feedbackText}
                                         onChange={(e) => setFeedbackText(e.target.value)}
-                                        placeholder="请输入反馈信息"
+                                        placeholder="请输入反馈信息(对于这次测试说点什么...)(不要超过500字)"
+                                        maxLength = {500}
                                         autoSize={{ minRows: 3, maxRows: 5 }}
                                     />
                                 </Row>
