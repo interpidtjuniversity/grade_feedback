@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { MailOutlined, SettingOutlined } from '@ant-design/icons';
+import { MailOutlined, SettingOutlined, TableOutlined } from '@ant-design/icons';
 import {Layout, Menu, theme, Button} from 'antd';
-import FeedBackListPage from "./FeedBackListPage";
-import PersonalPage from "./PersonalPage";
+import ClassListPage from "./ClassListPage";
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
@@ -14,16 +13,11 @@ const items = [
     {
         key: '1',
         icon: <MailOutlined />,
-        label: '反馈列表',
-    },
-    {
-        key: '2',
-        icon: <SettingOutlined />,
-        label: '个人管理',
+        label: '班级管理',
     }
 ];
 
-const Home = () => {
+const TeacherHome = () => {
     const [collapsed, setCollapsed] = useState(false);
     // 默认展示反馈列表
     const [componentKey, setComponentKey] = useState('1');
@@ -71,11 +65,10 @@ const Home = () => {
                     />
                 </Header>
                 <Content>
-                    {componentKey === '1' && <FeedBackListPage/>}
-                    {componentKey === '2' && <PersonalPage/>}
+                    {componentKey === '1' && <ClassListPage/>}
                 </Content>
             </Layout>
         </Layout>
     );
 };
-export default Home;
+export default TeacherHome;

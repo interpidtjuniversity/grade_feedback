@@ -1,0 +1,14 @@
+.puzzleContentStyle {
+    margin: 0;
+    height: 91.5vh;
+    color: #373636;
+    line-height: 50px;
+    text-align: center;
+    background: #e3e6e6;
+}
+
+.puzzleContentRowStyle {
+    display: block;
+    line-height: 50px;
+    text-align: center;
+}

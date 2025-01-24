@@ -1,13 +1,13 @@
-import {API_CancelFeedBack, API_CheckSession, API_FeedBack, API_FeedBackList} from "../api/api";
+import {API_CancelFeedBack, API_CheckSession, API_FeedBack, API_FeedBackList} from "../../api/api";
 import { PlusOutlined } from '@ant-design/icons';
 import { Table, Space, Tag, Drawer, Upload, Image, Input, Col, Row, Card, Button, message} from "antd";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import React from "react"
 
-import { API_Upload} from "../api/api";
+import { API_Upload} from "../../api/api";
 
-import {generateRandomString} from "../util/StringUtil"
+import {generateRandomString} from "../../util/StringUtil"
 
 const { TextArea } = Input;
 

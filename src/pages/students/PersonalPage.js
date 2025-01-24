@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, Button, message, Card } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
-import {API_UpdatePassWord} from "../api/api";
+import {API_UpdatePassWord} from "../../api/api";
 import {useNavigate} from "react-router-dom";
 
 const PersonalPage = () =>  {

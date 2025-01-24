@@ -28,6 +28,18 @@ export function API_Upload(data, doSuccess) {
     upload_post("/grade_feedback/api/upload", data, doSuccess)
 }
 
+export function API_ExamPuzzles(data, doSuccess) {
+    get("/exam/api/examPuzzles", data, doSuccess)
+}
+
+export function API_CreateClass(data, doSuccess) {
+    post("/teacher/api/createClass", data, doSuccess)
+}
+
+export function API_QueryClasses(data, doSuccess) {
+    get("/teacher/api/queryClasses", data, doSuccess)
+}
+
 export function API_CheckSession(params, doSuccess, doFailure) {
     get("/grade_feedback/api/checkSession",params,doSuccess, doFailure)
 }
