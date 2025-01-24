@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { MailOutlined, SettingOutlined, TableOutlined } from '@ant-design/icons';
+import {MailOutlined, SettingOutlined, UserOutlined} from '@ant-design/icons';
 import {Layout, Menu, theme, Button} from 'antd';
 import FeedBackListPage from "./FeedBackListPage";
 import PersonalPage from "./PersonalPage";
 import ExamListPage from "./ExamListPage";
+import ClassListPage from "./ClassListPage";
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
@@ -24,8 +25,8 @@ const items = [
     },
     {
         key: '3',
-        icon: <TableOutlined />,
-        label: '考试列表'
+        icon: <UserOutlined />,
+        label: '我的班级'
     }
 ];
 
@@ -33,6 +34,8 @@ const StudentHome = () => {
     const [collapsed, setCollapsed] = useState(false);
     // 默认展示反馈列表
     const [componentKey, setComponentKey] = useState('1');
+    // 是否选中了classId
+    const [classInfo, setClassInfo] = useState(null);
 
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -41,7 +44,6 @@ const StudentHome = () => {
     const onClick = (item) => {
         setComponentKey(item.key);
     }
-
 
     return (
         <Layout style={{"height": "100%"}}>
@@ -79,7 +81,8 @@ const StudentHome = () => {
                 <Content>
                     {componentKey === '1' && <FeedBackListPage/>}
                     {componentKey === '2' && <PersonalPage/>}
-                    {componentKey === '3' && <ExamListPage/>}
+                    {componentKey === '3' && classInfo === null && <ClassListPage selectClassFunc={setClassInfo}/>}
+                    {componentKey === '3' && classInfo !== null && <ExamListPage selectedClass={classInfo} resetClass={()=>setClassInfo(null)}/>}
                 </Content>
             </Layout>
         </Layout>

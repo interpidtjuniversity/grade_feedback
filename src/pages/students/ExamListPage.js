@@ -8,8 +8,9 @@ import './ExamListPage.css'; // 自定义样式
 
 // latex代码渲染
 import { MathJaxContext, MathJax } from 'better-react-mathjax';
+import {ArrowLeftOutlined} from "@ant-design/icons";
 
-const ExamListPage = () =>  {
+const ExamListPage = (props) =>  {
 
     const navigate = useNavigate();
 
@@ -40,17 +41,17 @@ const ExamListPage = () =>  {
     const choicesItem = ["A.", "B.", "C.", "D.", "E.", "F.", "G.", "H.", "I."];
 
     useEffect(() => {
-        API_CheckSession({}, (data) => {
-            if (data === false) {
-                navigate('/login', {replace: true})
-            } else {
-                setExamList(mockExamListData);
-            }
-        }, (err) => {
-            if (err !== null) {
-                navigate('/login', {replace: true})
-            }
-        })
+        // API_CheckSession({}, (data) => {
+        //     if (data === false) {
+        //         navigate('/login', {replace: true})
+        //     } else {
+        //         setExamList(mockExamListData);
+        //     }
+        // }, (err) => {
+        //     if (err !== null) {
+        //         navigate('/login', {replace: true})
+        //     }
+        // })
 
     }, []);
 
@@ -164,6 +165,40 @@ const ExamListPage = () =>  {
 
     return (
         <div>
+            <Row
+                align="middle"
+                justify="space-between"
+                style={{
+                    padding: '16px',
+                    backgroundColor: '#f0f2f5',
+                    borderRadius: '8px',
+                    marginBottom: '16px',
+                }}
+            >
+                <Tag
+                    color="success"
+                    style={{
+                        fontSize: '16px',
+                        padding: '8px 12px',
+                        borderRadius: '20px',
+                    }}
+                >
+                    {props.selectedClass.className}
+                </Tag>
+                <Button
+                    type="primary"
+                    icon={<ArrowLeftOutlined />} // 添加返回图标
+                    onClick={() => props.resetClass()}
+                    style={{
+                        borderRadius: '20px',
+                        padding: '8px 16px',
+                        height: 'auto',
+                    }}
+                >
+                    返回
+                </Button>
+            </Row>
+
             {showExamList && (
                 <Table key={reloadKey} columns={columns} dataSource={examList} rowKey={'id'}/>
             )}
