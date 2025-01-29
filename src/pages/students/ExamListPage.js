@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Radio, message, Carousel, Table, Tag, Space, Row, Button} from 'antd';
-import {API_CheckSession, API_ExamPuzzles } from "../../api/api";
+import {API_CheckSession, API_ExamList, API_ExamPuzzles, API_SubmitExam} from "../../api/api";
 import {useNavigate} from "react-router-dom";
 
 
@@ -13,30 +13,6 @@ import {ArrowLeftOutlined} from "@ant-design/icons";
 const ExamListPage = (props) =>  {
 
     const navigate = useNavigate();
-
-    const mockExamListData = [
-        {
-            "id":"1",
-            "examId":"第一章前侧",
-            "startTime":"2025-01-01 12:00",
-            "endTime":"2025-01-02 12:00",
-            "examStatus":"已结束"
-        },
-        {
-            "id":"2",
-            "examId":"第一章后侧",
-            "startTime":"2025-01-01 12:00",
-            "endTime":"2025-01-02 12:00",
-            "examStatus":"可作答"
-        },
-        {
-            "id":"3",
-            "examId":"第二章前侧",
-            "startTime":"2025-01-01 12:00",
-            "endTime":"2025-01-02 12:00",
-            "examStatus":"未开始"
-        }
-    ]
 
     const choicesItem = ["A.", "B.", "C.", "D.", "E.", "F.", "G.", "H.", "I."];
 
@@ -52,23 +28,47 @@ const ExamListPage = (props) =>  {
         //         navigate('/login', {replace: true})
         //     }
         // })
+        API_ExamList({"classId": props.selectedClass.classId}, (data) => {
+            setExamList(data.data);
+        })
 
     }, []);
 
     // 查询一个新的考试
     const fetchExamPuzzles = (record) => {
-        API_ExamPuzzles({"examId": record.examId}, (data) => {
+        API_ExamPuzzles({"examName": record.examName, "groupId": record.groupId}, (data) => {
             setExamPuzzlesList(data.data)
         })
     }
     // 选项改变
     const handlePuzzleSelectChange = (puzzleId) => (e) => {
-        examPuzzleSelectMap[puzzleId] = String.fromCharCode('A'.charCodeAt(0) + e.target.value);
+        examPuzzleSelectMap[String(puzzleId)] = String.fromCharCode('A'.charCodeAt(0) + e.target.value);
         setExamPuzzleSelectMap(examPuzzleSelectMap);
     };
     // 提交考试
     const submitExam = () => {
-        console.log(examPuzzleSelectMap);
+        let requestBody = {
+            "studentName": props.selectedClass.studentName,
+            "classId": props.selectedClass.classId,
+            "className": props.selectedClass.className,
+            "groupId": currentExam.groupId,
+            "groupName": currentExam.groupName,
+            "examName": currentExam.examName,
+            "answers": examPuzzleSelectMap
+        }
+        API_SubmitExam(requestBody, (data) => {
+            if (data.data === true) {
+                message.success('提交成功');
+            } else {
+                message.error(data.message);
+            }
+            returnFunc();
+        })
+    }
+
+    const returnFunc = () => {
+        props.resetClass();
+        setCurrentExam({});
     }
 
     // 考试列表
@@ -82,17 +82,18 @@ const ExamListPage = (props) =>  {
     const [showExamPaper, setShowExamPaper] = useState(false);
     const [examPuzzlesList, setExamPuzzlesList] = useState([]);
     const [examPuzzleSelectMap, setExamPuzzleSelectMap] = useState({});
+    const [currentExam, setCurrentExam] = useState({});
 
     const columns = [
         {
             title: '测试名称',
-            dataIndex: 'examId',
-            key: 'examId',
+            dataIndex: 'examName',
+            key: 'examName',
             render: (_, record) =>
                 <Tag color="cyan" onClick={() => {
                     message.warning("暂不支持,敬请期待");
                 }}>
-                    {record.examId}
+                    {record.examName}
                 </Tag>,
         },
         {
@@ -107,24 +108,24 @@ const ExamListPage = (props) =>  {
         },
         {
             title: '测试状态',
-            key: 'examStatus',
-            dataIndex: 'examStatus',
+            key: 'status',
+            dataIndex: 'status',
             render: (_, record ) => (
                 <>
                     {
-                        record.examStatus === '已结束' ?
+                        record.status === '未作答' ?
                             <Tag color="red">
-                                {record.examStatus}
+                                {record.status}
                             </Tag>
                             :
-                            record.examStatus === '未开始' ?
-                                <Tag color="orange">
-                                    {record.examStatus}
+                            record.status === '已作答' ?
+                                <Tag color="green">
+                                    {record.status}
                                 </Tag>
                                 :
                                 // 可作答
                                 <Tag color="green">
-                                    {record.examStatus}
+                                    {record.status}
                                 </Tag>
                     }
                 </>
@@ -136,17 +137,18 @@ const ExamListPage = (props) =>  {
             render: (_, record) => (
                 <>
                     {
-                        record.examStatus === '可作答' ?
+                        record.status === '未作答' ?
                             <Space direction="horizontal" size="middle">
                                 <a onClick={() => {
                                     fetchExamPuzzles(record);
                                     setShowExamList(false);
                                     setShowExamAnswerRecordList(false)
                                     setShowExamPaper(true);
+                                    setCurrentExam(record);
                                 }}>开始测试</a>
                             </Space>
                             :
-                            record.examStatus === '已结束' ?
+                            record.status === '已作答' ?
                                 <Space direction="horizontal" size="middle">
                                     <a onClick={() => {
                                         setShowExamList(false);
@@ -188,7 +190,7 @@ const ExamListPage = (props) =>  {
                 <Button
                     type="primary"
                     icon={<ArrowLeftOutlined />} // 添加返回图标
-                    onClick={() => props.resetClass()}
+                    onClick={() => returnFunc()}
                     style={{
                         borderRadius: '20px',
                         padding: '8px 16px',
@@ -221,7 +223,7 @@ const ExamListPage = (props) =>  {
                                     </Row>
                                     <Row className="puzzleContentRowStyle">
                                         <MathJaxContext>
-                                            <Radio.Group onChange={handlePuzzleSelectChange(puzzle_idx)}>
+                                            <Radio.Group onChange={handlePuzzleSelectChange(puzzle_idx + 1)}>
                                                 {
                                                     puzzle.choices.map((choice, choice_idx) => (
                                                         <Row key={choice_idx}>

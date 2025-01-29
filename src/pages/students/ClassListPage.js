@@ -7,6 +7,7 @@ import './ClassListPage.css'; // 自定义样式
 
 import Meta from "antd/es/card/Meta";
 import {FileTextOutlined} from "@ant-design/icons";
+import {API_ClassList} from "../../api/api";
 
 const ClassListPage = (props) =>  {
 
@@ -24,35 +25,14 @@ const ClassListPage = (props) =>  {
         //         navigate('/login', {replace: true})
         //     }
         // })
-        // API_QueryClasses({}, (data) => {
-        //     setClasses(data.data);
-        // })
+        API_ClassList({}, (data) => {
+            setClasses(data.data);
+        })
 
     }, []);
 
     // 班级列表
-    const [classes, setClasses] = useState([
-        {
-            "classId":1,
-            "className":"测试班级1",
-            "studentClassInfoModel":{
-                "students":{
-                    "12345":"张三",
-                    "12354":"李四",
-                }
-            }
-        },
-        {
-            "classId":2,
-            "className":"测试班级2",
-            "studentClassInfoModel":{
-                "students":{
-                    "12345":"张三",
-                    "12354":"李四",
-                }
-            }
-        }
-    ]);
+    const [classes, setClasses] = useState([]);
 
     return (
         <div>
@@ -76,7 +56,7 @@ const ClassListPage = (props) =>  {
                                 title={c.className}
                                 description={
                                     <div>
-                                        <div>{new Map(Object.entries(c.studentClassInfoModel.students)).size}人</div>
+                                        <div>{new Map(Object.entries(c.students)).size}人</div>
                                     </div>
                                 }
                             />

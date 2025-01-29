@@ -29,7 +29,15 @@ export function API_Upload(data, doSuccess) {
 }
 
 export function API_ExamPuzzles(data, doSuccess) {
-    get("/exam/api/examPuzzles", data, doSuccess)
+    get("/student/api/examPuzzles", data, doSuccess)
+}
+
+export function API_ExamList(data, doSuccess) {
+    get("/student/api/examList", data, doSuccess)
+}
+
+export function API_SubmitExam(data, doSuccess) {
+    post("/student/api/submitExam", data, doSuccess)
 }
 
 export function API_CreateClass(data, doSuccess) {
@@ -38,6 +46,10 @@ export function API_CreateClass(data, doSuccess) {
 
 export function API_QueryClasses(data, doSuccess) {
     get("/teacher/api/queryClasses", data, doSuccess)
+}
+
+export function API_ClassList(data, doSuccess) {
+    get("/student/api/classList", data, doSuccess)
 }
 
 export function API_CheckSession(params, doSuccess, doFailure) {
