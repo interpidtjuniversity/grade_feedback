@@ -40,6 +40,10 @@ export function API_SubmitExam(data, doSuccess) {
     post("/student/api/submitExam", data, doSuccess)
 }
 
+export function API_ExamRecords(data, doSuccess) {
+    get("/student/api/examRecords", data, doSuccess)
+}
+
 export function API_CreateClass(data, doSuccess) {
     post("/teacher/api/createClass", data, doSuccess)
 }
