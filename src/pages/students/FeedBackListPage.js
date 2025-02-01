@@ -24,25 +24,25 @@ const FeedBackListPage = () =>  {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // API_CheckSession({}, (data) => {
-        //     if (data === false) {
-        //         navigate('/login', {replace: true})
-        //     } else {
-        //         API_FeedBackList({}, (data) => {
-        //             if (data.success === true) {
-        //                 setFeedBackData(data.data);
-        //             } else {
-        //                 message.error(data.message);
-        //             }
-        //         }, (error) => {
-        //             message.error(error);
-        //         })
-        //     }
-        // }, (err) => {
-        //     if (err !== null) {
-        //         navigate('/login', {replace: true})
-        //     }
-        // })
+        API_CheckSession({}, (data) => {
+            if (data === false) {
+                navigate('/login', {replace: true})
+            } else {
+                API_FeedBackList({}, (data) => {
+                    if (data.success === true) {
+                        setFeedBackData(data.data);
+                    } else {
+                        message.error(data.message);
+                    }
+                }, (error) => {
+                    message.error(error);
+                })
+            }
+        }, (err) => {
+            if (err !== null) {
+                navigate('/login', {replace: true})
+            }
+        })
 
     }, []);
 

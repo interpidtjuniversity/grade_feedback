@@ -1,8 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Radio, message, Carousel, Table, Tag, Space, Row, Button, Col} from 'antd';
+import {Radio, message, Carousel, Table, Tag, Space, Row, Button, Col, Typography} from 'antd';
 import {API_CheckSession, API_ExamList, API_ExamPuzzles, API_ExamRecords, API_SubmitExam} from "../../api/api";
 import {useNavigate} from "react-router-dom";
 
+import dayjs from 'dayjs';
 
 import './ExamListPage.css'; // 自定义样式
 
@@ -17,19 +18,18 @@ const ExamListPage = (props) =>  {
     const choicesItem = ["A.", "B.", "C.", "D.", "E.", "F.", "G.", "H.", "I."];
 
     useEffect(() => {
-        // API_CheckSession({}, (data) => {
-        //     if (data === false) {
-        //         navigate('/login', {replace: true})
-        //     } else {
-        //         setExamList(mockExamListData);
-        //     }
-        // }, (err) => {
-        //     if (err !== null) {
-        //         navigate('/login', {replace: true})
-        //     }
-        // })
-        API_ExamList({"classId": props.selectedClass.classId}, (data) => {
-            setExamList(data.data);
+        API_CheckSession({}, (data) => {
+            if (data === false) {
+                navigate('/login', {replace: true})
+            } else {
+                API_ExamList({"classId": props.selectedClass.classId}, (data) => {
+                    setExamList(data.data);
+                })
+            }
+        }, (err) => {
+            if (err !== null) {
+                navigate('/login', {replace: true})
+            }
         })
 
     }, []);
@@ -94,17 +94,17 @@ const ExamListPage = (props) =>  {
     }
 
     const handlePrev = (flag) => {
-        if (flag === "examPaper") {
+        if (flag === "examPaper" && examPaperCarouselRef.current) {
             examPaperCarouselRef.current.prev();
-        } else if (flag === "examRecord") {
+        } else if (flag === "examRecord" && examRecordCarouselRef.current) {
             examRecordCarouselRef.current.prev();
         }
     }
 
     const handleNext = (flag) => {
-        if (flag === "examPaper") {
+        if (flag === "examPaper" && examPaperCarouselRef.current) {
             examPaperCarouselRef.current.next();
-        } else if (flag === "examRecord") {
+        } else if (flag === "examRecord" && examRecordCarouselRef.current) {
             examRecordCarouselRef.current.next();
         }
     }
@@ -142,11 +142,21 @@ const ExamListPage = (props) =>  {
             title: '开始时间',
             dataIndex: 'startTime',
             key: 'startTime',
+            render: (_, record) => (
+                <Typography.Text type="secondary">
+                    {dayjs(record.startTime).format('YYYY-MM-DD HH:mm:ss')}
+                </Typography.Text>
+            )
         },
         {
             title: '结束时间',
             dataIndex: 'endTime',
             key: 'endTime',
+            render: (_, record) => (
+                <Typography.Text type="secondary">
+                    {dayjs(record.endTime).format('YYYY-MM-DD HH:mm:ss')}
+                </Typography.Text>
+            )
         },
         {
             title: '测试状态',
@@ -407,6 +417,16 @@ const ExamListPage = (props) =>  {
                                                         ))
                                                     }
                                                 </Radio.Group>
+                                            </MathJaxContext>
+                                        </Row>
+
+                                        <Row>
+                                            <MathJaxContext>
+                                                <MathJax>
+                                                    <Typography.Text type="secondary">
+                                                        {puzzle.analysis}
+                                                    </Typography.Text>
+                                                </MathJax>
                                             </MathJaxContext>
                                         </Row>
                                     </div>

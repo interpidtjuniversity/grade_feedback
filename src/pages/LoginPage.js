@@ -13,7 +13,7 @@ const LoginPage = () => {
             if (data.code === "100") {
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("studentId", values.studentId);
-                navigate('/studenthome', {replace: true})
+                navigate(data.url, {replace: true})
             } else {
                 message.error(data.message);
             }

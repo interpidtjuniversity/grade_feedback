@@ -7,26 +7,25 @@ import './ClassListPage.css'; // 自定义样式
 
 import Meta from "antd/es/card/Meta";
 import {FileTextOutlined} from "@ant-design/icons";
-import {API_ClassList} from "../../api/api";
+import {API_CheckSession, API_ClassList} from "../../api/api";
 
 const ClassListPage = (props) =>  {
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        // API_CheckSession({}, (data) => {
-        //     if (data === false) {
-        //         navigate('/login', {replace: true})
-        //     } else {
-        //
-        //     }
-        // }, (err) => {
-        //     if (err !== null) {
-        //         navigate('/login', {replace: true})
-        //     }
-        // })
-        API_ClassList({}, (data) => {
-            setClasses(data.data);
+        API_CheckSession({}, (data) => {
+            if (data === false) {
+                navigate('/login', {replace: true})
+            } else {
+                API_ClassList({}, (data) => {
+                    setClasses(data.data);
+                })
+            }
+        }, (err) => {
+            if (err !== null) {
+                navigate('/login', {replace: true})
+            }
         })
 
     }, []);

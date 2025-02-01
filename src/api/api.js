@@ -44,6 +44,10 @@ export function API_ExamRecords(data, doSuccess) {
     get("/student/api/examRecords", data, doSuccess)
 }
 
+export function API_IsTeacher(data, doSuccess) {
+    get("/grade_feedback/api/isTeacher", data, doSuccess)
+}
+
 export function API_CreateClass(data, doSuccess) {
     post("/teacher/api/createClass", data, doSuccess)
 }
