@@ -28,13 +28,12 @@ const ClassListPage = () =>  {
             } else {
                 API_IsTeacher({}, (data) => {
                     setIsTeacher(data);
+                    if (isTeacher) {
+                        API_QueryClasses({}, (data) => {
+                            setClasses(data.data);
+                        });
+                    }
                 });
-
-                if (isTeacher) {
-                    API_QueryClasses({}, (data) => {
-                        setClasses(data.data);
-                    });
-                }
             }
         }, (err) => {
             if (err !== null) {
