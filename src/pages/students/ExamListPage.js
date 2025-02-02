@@ -10,6 +10,7 @@ import './ExamListPage.css'; // 自定义样式
 // latex代码渲染
 import { MathJaxContext, MathJax } from 'better-react-mathjax';
 import {ArrowLeftOutlined, CheckCircleFilled, CloseCircleFilled, LeftOutlined, RightOutlined} from "@ant-design/icons";
+import ImageGallery from "./exam/ImageGallery";
 
 const ExamListPage = (props) =>  {
 
@@ -361,18 +362,9 @@ const ExamListPage = (props) =>  {
                                             </MathJaxContext>
                                         </Row>
 
-                                        <div className="image-row">
-                                            <Row gutter={[16, 16]}> {/* 设置间距 */}
-                                                {puzzle.images.map((url, index) => (
-                                                    <Col key={index} xs={24} sm={12} md={8} lg={6} xl={4}>
-                                                        {/* 每个图片等大小显示 */}
-                                                        <div className="image-container">
-                                                            <img src={url} alt={`题目图片${index}`} className="image"/>
-                                                        </div>
-                                                    </Col>
-                                                ))}
-                                            </Row>
-                                        </div>
+                                        <Row className="puzzleContentRowStyle">
+                                            <ImageGallery imageUrls={puzzle.images}/>
+                                        </Row>
 
                                         <Row className="puzzleContentRowStyle">
                                             <MathJaxContext>
