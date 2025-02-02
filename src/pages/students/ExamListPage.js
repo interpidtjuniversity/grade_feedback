@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Radio, message, Carousel, Table, Tag, Space, Row, Button, Col, Typography} from 'antd';
+import {Radio, message, Carousel, Table, Tag, Space, Row, Button, Typography} from 'antd';
 import {API_CheckSession, API_ExamList, API_ExamPuzzles, API_ExamRecords, API_SubmitExam} from "../../api/api";
 import {useNavigate} from "react-router-dom";
 
@@ -298,18 +298,9 @@ const ExamListPage = (props) =>  {
                                         </MathJaxContext>
                                     </Row>
 
-                                    <div className="image-row">
-                                        <Row gutter={[16, 16]}> {/* 设置间距 */}
-                                            {puzzle.images.map((url, index) => (
-                                                <Col key={index} xs={24} sm={12} md={8} lg={6} xl={4}>
-                                                    {/* 每个图片等大小显示 */}
-                                                    <div className="image-container">
-                                                        <img src={url} alt={`题目图片${index}`} className="image"/>
-                                                    </div>
-                                                </Col>
-                                            ))}
-                                        </Row>
-                                    </div>
+                                    <Row className="puzzleContentRowStyle">
+                                        <ImageGallery imageUrls={puzzle.images}/>
+                                    </Row>
 
                                     <Row className="puzzleContentRowStyle">
                                         <MathJaxContext>
