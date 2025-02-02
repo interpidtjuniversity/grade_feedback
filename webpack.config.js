@@ -57,7 +57,7 @@ module.exports = (env, argv) => {
             ],
         },
         // mode: 'production', // 生产模式
-        mode: 'development', // 生产模式
+        mode: 'development', // 生产模式,生产环境以dev模式启动
         devtool: 'nosources-source-map', // 禁用详细 Source Map
         devServer: {
             static: {
@@ -71,7 +71,7 @@ module.exports = (env, argv) => {
             proxy: [
                 {
                     context: ['/remote'],
-                    target: 'http://localhost:8080',
+                    target: 'http://8.138.173.53:8080',
                     changeOrigin: true,
                     pathRewrite: { '^/remote': '' }, // 重写路径，去除 /remote 前缀
                     logLevel: 'debug' // 开启调试日志
