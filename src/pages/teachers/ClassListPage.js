@@ -28,7 +28,7 @@ const ClassListPage = () =>  {
             } else {
                 API_IsTeacher({}, (data) => {
                     setIsTeacher(data);
-                    if (isTeacher) {
+                    if (true === data) {
                         API_QueryClasses({}, (data) => {
                             setClasses(data.data);
                         });
