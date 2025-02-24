@@ -310,7 +310,7 @@ const ExamListPage = (props) =>  {
                                                         <Row key={choice_idx}>
                                                             <Radio value={choice_idx}>
                                                                 <MathJax>
-                                                                    <h3>{choicesItem[choice_idx]}{choice}</h3>
+                                                                    <h3>{choice}</h3>
                                                                 </MathJax>
                                                             </Radio>
                                                         </Row>
@@ -372,7 +372,7 @@ const ExamListPage = (props) =>  {
                                                                                     <Row>
                                                                                         <CheckCircleFilled
                                                                                             style={{color: 'green'}}/>
-                                                                                        <h3 style={{color: "green"}}>{choicesItem[choice_idx]}{choice}</h3>
+                                                                                        <h3 style={{color: "green"}}>{choice}</h3>
                                                                                     </Row>
                                                                                 </div>
                                                                                 :
@@ -382,7 +382,7 @@ const ExamListPage = (props) =>  {
                                                                                         <Row>
                                                                                             <CloseCircleFilled
                                                                                                 style={{color: 'red'}}/>
-                                                                                            <h3 style={{color: "red"}}>{choicesItem[choice_idx]}{choice}</h3>
+                                                                                            <h3 style={{color: "red"}}>{choice}</h3>
                                                                                         </Row>
                                                                                     </div>
                                                                                     :
@@ -390,7 +390,7 @@ const ExamListPage = (props) =>  {
                                                                                         <Row>
                                                                                             <CloseCircleFilled
                                                                                                 style={{visibility: 'hidden'}}/>
-                                                                                            <h3>{choicesItem[choice_idx]}{choice}</h3>
+                                                                                            <h3>{choice}</h3>
                                                                                         </Row>
                                                                                     </div>
                                                                         }
@@ -403,11 +403,18 @@ const ExamListPage = (props) =>  {
                                             </MathJaxContext>
                                         </Row>
 
-                                        <Row>
+                                        <Row justify="center">
                                             <MathJaxContext>
                                                 <MathJax>
-                                                    <Typography.Text type="secondary">
-                                                        {puzzle.analysis}
+                                                    <Typography.Text
+                                                        type="secondary"
+                                                        style={{
+                                                            textAlign: 'left',
+                                                            display: 'block',
+                                                            width: 'fit-content'
+                                                        }}
+                                                    >
+                                                        {puzzle.analysis.replace(/{\[}解析{\]}/g, '解析')}
                                                     </Typography.Text>
                                                 </MathJax>
                                             </MathJaxContext>
