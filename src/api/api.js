@@ -44,6 +44,10 @@ export function API_ExamRecords(data, doSuccess) {
     get("/remote/student/api/examRecords", data, doSuccess)
 }
 
+export function API_Keepalive(params, doSuccess, doFailure) {
+    get("/remote/student/api/keepalive",params,doSuccess, doFailure)
+}
+
 export function API_IsTeacher(data, doSuccess) {
     get("/remote/grade_feedback/api/isTeacher", data, doSuccess)
 }

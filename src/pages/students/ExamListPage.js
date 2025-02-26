@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Radio, message, Carousel, Table, Tag, Space, Row, Button, Typography, Card, Col} from 'antd';
 import {API_CheckSession, API_ExamList, API_ExamPuzzles, API_ExamRecords, API_SubmitExam} from "../../api/api";
 import {useNavigate} from "react-router-dom";
@@ -12,6 +12,8 @@ import { MathJaxContext, MathJax } from 'better-react-mathjax';
 import {ArrowLeftOutlined, CheckCircleFilled, CloseCircleFilled, LeftOutlined, RightOutlined} from "@ant-design/icons";
 import ImageGallery from "./exam/ImageGallery";
 import FloatingTimer from "./exam/FloatingTimer";
+import PageMonitor from "./exam/PageMonitor";
+import KeepAlive from "./exam/KeepAlive";
 
 const ExamListPage = (props) =>  {
 
@@ -302,7 +304,13 @@ const ExamListPage = (props) =>  {
                 <Button
                     type="primary"
                     icon={<ArrowLeftOutlined />} // 添加返回图标
-                    onClick={() => returnFunc()}
+                    onClick={() => {
+                        // 如果当前打开了一个正在作答的考试, 则直接提交
+                        if (Object.keys(currentExam).length > 0) {
+                            submitExam();
+                        }
+                        returnFunc()
+                    }}
                     style={{
                         borderRadius: '20px',
                         marginRight: '50px',
@@ -318,12 +326,17 @@ const ExamListPage = (props) =>  {
             )}
             {showExamPaper && (
                 <div className="custom-carousel-container">
-                    <Carousel ref={examPaperCarouselRef} dots={false}>
+                    <Carousel ref={examPaperCarouselRef} dots={false} swipe={false}>
                         {
                             <div className="puzzleContentStyle">
                                 <Row justify="center" align="middle" style={{ height: '100%', backgroundColor: '#f0f2f5' }}>
                                     <Col span={12}>
                                         <Card style={{width: '100%', height: '100%', textAlign: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }} title="考试须知">
+                                            <Row>
+                                                <Typography.Text style={{fontSize: '14px', color: '#333333'}}>
+                                                    0.题目简单, 请诚信考试, 考试一旦开始不可返回
+                                                </Typography.Text>
+                                            </Row>
                                             <Row>
                                                 <Typography.Text style={{fontSize: '14px', color: '#333333'}}>
                                                     1.当前题目作答完成后才可以点击下一道题
@@ -337,6 +350,16 @@ const ExamListPage = (props) =>  {
                                             <Row>
                                                 <Typography.Text style={{fontSize: '14px', color: '#333333'}}>
                                                     3.倒计时结束后试卷将自动提交, 请在规定时间内作答
+                                                </Typography.Text>
+                                            </Row>
+                                            <Row>
+                                                <Typography.Text style={{fontSize: '14px', color: '#333333'}}>
+                                                    4.请不要切换浏览器标签页或将浏览器最小化，后台会有记录
+                                                </Typography.Text>
+                                            </Row>
+                                            <Row>
+                                                <Typography.Text style={{fontSize: '14px', color: '#333333'}}>
+                                                    5.可以使用计算器😮‍💨
                                                 </Typography.Text>
                                             </Row>
                                             <Row justify="center" style={{ paddingTop: '50%'}}>
@@ -396,6 +419,8 @@ const ExamListPage = (props) =>  {
                     <Button className="carousel-button next-button" onClick={() => {handleNext("examPaper")}}>
                         <RightOutlined />
                     </Button>
+                    <PageMonitor/>
+                    <KeepAlive/>
                 </div>
             )}
             <FloatingTimer
