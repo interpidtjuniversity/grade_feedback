@@ -1,5 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Radio, message, Carousel, Table, Tag, Space, Row, Button, Typography} from 'antd';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {Radio, message, Carousel, Table, Tag, Space, Row, Button, Typography, Card, Col} from 'antd';
 import {API_CheckSession, API_ExamList, API_ExamPuzzles, API_ExamRecords, API_SubmitExam} from "../../api/api";
 import {useNavigate} from "react-router-dom";
 
@@ -11,6 +11,7 @@ import './ExamListPage.css'; // 自定义样式
 import { MathJaxContext, MathJax } from 'better-react-mathjax';
 import {ArrowLeftOutlined, CheckCircleFilled, CloseCircleFilled, LeftOutlined, RightOutlined} from "@ant-design/icons";
 import ImageGallery from "./exam/ImageGallery";
+import FloatingTimer from "./exam/FloatingTimer";
 
 const ExamListPage = (props) =>  {
 
@@ -65,8 +66,10 @@ const ExamListPage = (props) =>  {
             "groupId": currentExam.groupId,
             "groupName": currentExam.groupName,
             "examName": currentExam.examName,
-            "answers": examPuzzleSelectMap
+            "answers": examPuzzleSelectMap,
+            "clickNextTimeList": clickNextTimeList
         }
+        // 按理说所有时间都应该以服务器的时间为准
         API_SubmitExam(requestBody, (data) => {
             if (data.data === true) {
                 message.success('提交成功');
@@ -96,19 +99,43 @@ const ExamListPage = (props) =>  {
 
     const handlePrev = (flag) => {
         if (flag === "examPaper" && examPaperCarouselRef.current) {
-            examPaperCarouselRef.current.prev();
+            // 不能回到上一题
+            // examPaperCarouselRef.current.prev();
         } else if (flag === "examRecord" && examRecordCarouselRef.current) {
             examRecordCarouselRef.current.prev();
         }
     }
 
-    const handleNext = (flag) => {
+    const handleNext = (flag, ext = null) => {
         if (flag === "examPaper" && examPaperCarouselRef.current) {
-            examPaperCarouselRef.current.next();
+            // 检查这道题的状态是否是已经作答，做答后才可以进行下一个
+            if (null !== ext) {
+                setCurrentPuzzleIndex(ext['puzzleIndex']);
+                // 记录时间戳
+                clickNextTimeList.push(new Date().getTime());
+                setClickNextTimeList(clickNextTimeList);
+
+                examPaperCarouselRef.current.next();
+                setStartCountdown(currentExam.duration);
+            } else {
+                // 这道题已经作答才允许切换
+                if (String(currentPuzzleIndex) in examPuzzleSelectMap) {
+                    clickNextTimeList.push(new Date().getTime());
+                    setClickNextTimeList(clickNextTimeList);
+
+                    setCurrentPuzzleIndex(currentPuzzleIndex + 1);
+                    examPaperCarouselRef.current.next();
+                }
+            }
         } else if (flag === "examRecord" && examRecordCarouselRef.current) {
             examRecordCarouselRef.current.next();
         }
     }
+
+    // 这里是因为Carousel组件在切换时会导致组件刷新，内联函数的引用每次都会发生改变，所以这里要使用useCallback包裹住
+    const timeEnded = () => {
+        submitExam();
+    };
 
     // 考试列表
     const [reloadKey, setReloadKey] = useState(0);
@@ -125,6 +152,11 @@ const ExamListPage = (props) =>  {
     // 控制走马灯的切换
     const examPaperCarouselRef = useRef(null);
     const examRecordCarouselRef = useRef(null);
+    // 记录每道题的作答时长记录
+    const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0); // 题目序号从1开始
+    const [clickNextTimeList, setClickNextTimeList] = useState([]);    // 每道题的next点击时间戳
+    // 倒计时组件
+    const [startCountdown, setStartCountdown] = useState(-1);
 
 
     const columns = [
@@ -288,6 +320,36 @@ const ExamListPage = (props) =>  {
                 <div className="custom-carousel-container">
                     <Carousel ref={examPaperCarouselRef} dots={false}>
                         {
+                            <div className="puzzleContentStyle">
+                                <Row justify="center" align="middle" style={{ height: '100%', backgroundColor: '#f0f2f5' }}>
+                                    <Col span={12}>
+                                        <Card style={{width: '100%', height: '100%', textAlign: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }} title="考试须知">
+                                            <Row>
+                                                <Typography.Text style={{fontSize: '14px', color: '#333333'}}>
+                                                    1.当前题目作答完成后才可以点击下一道题
+                                                </Typography.Text>
+                                            </Row>
+                                            <Row>
+                                                <Typography.Text style={{fontSize: '14px', color: '#333333'}}>
+                                                    2.已经作答完毕的题目不可以返回查看, 请确认最终答案后再点击下一道
+                                                </Typography.Text>
+                                            </Row>
+                                            <Row>
+                                                <Typography.Text style={{fontSize: '14px', color: '#333333'}}>
+                                                    3.倒计时结束后试卷将自动提交, 请在规定时间内作答
+                                                </Typography.Text>
+                                            </Row>
+                                            <Row justify="center" style={{ paddingTop: '50%'}}>
+                                                <Button type="primary" size="large" onClick={() => handleNext("examPaper", {"puzzleIndex": 1})}>
+                                                    我已经知晓
+                                                </Button>
+                                            </Row>
+                                        </Card>
+                                    </Col>
+                                </Row>
+                            </div>
+                        }
+                        {
                             examPuzzlesList.map((puzzle, puzzle_idx) => (
                                 <div className="puzzleContentStyle" key={puzzle_idx}>
                                     <Row className="puzzleContentRowStyle">
@@ -336,6 +398,10 @@ const ExamListPage = (props) =>  {
                     </Button>
                 </div>
             )}
+            <FloatingTimer
+                initialMinutes={startCountdown}
+                onTimerEnd={timeEnded}
+            />
             {showExamAnswerRecordList && (
                 <div className="custom-carousel-container">
                     <Carousel ref={examRecordCarouselRef} dots={false}>

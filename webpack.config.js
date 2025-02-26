@@ -72,6 +72,7 @@ module.exports = (env, argv) => {
                 {
                     context: ['/remote'],
                     target: 'http://8.138.173.53:8080',
+                    //target: 'http://localhost:8080',
                     changeOrigin: true,
                     pathRewrite: { '^/remote': '' }, // 重写路径，去除 /remote 前缀
                     logLevel: 'debug' // 开启调试日志
