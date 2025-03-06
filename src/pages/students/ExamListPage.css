@@ -4,6 +4,9 @@
     height: 100%;
     line-height: 40px;
     text-align: center;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .puzzleContentRowStyle {
@@ -51,4 +54,89 @@
 
 .carousel-button:hover {
     background-color: rgba(0, 0, 0, 0.8); /* 鼠标悬停时的背景色 */
+}
+
+/* 解析卡片样式 */
+.analysis-card {
+    width: 80%;
+    height: 100%;
+    background-color: #f9f9f9;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+    padding: 16px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.analysis-card h4 {
+    color: #1890ff; /* 蓝色标题 */
+    font-size: 16px;
+}
+
+.analysis-card p {
+    font-size: 14px;
+    color: #666; /* 灰色正文 */
+    line-height: 1.5;
+}
+
+/* 知识点标签样式 */
+.knowledge-tags {
+    margin-top: 10px;
+}
+
+.knowledge-tags .ant-tag {
+    margin-right: 8px;
+    background-color: #e6f7ff; /* 浅蓝色背景 */
+    border: 1px solid #91d5ff;
+    color: #1890ff; /* 蓝色文字 */
+    font-size: 12px;
+    padding: 2px 8px;
+}
+
+/* 选项样式调整 */
+.answer-record-radio .ant-radio-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.answer-record-radio .ant-radio + span {
+    display: flex;
+    align-items: center;
+}
+
+.answer-record-radio .anticon {
+    font-size: 18px; /* 图标大小 */
+    margin-right: 8px; /* 图标与文本间距 */
+}
+
+.answer-record-radio h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+/* 禁用状态优化 */
+.ant-radio-group[disabled] .ant-radio-wrapper {
+    cursor: default;
+    color: #333; /* 静态文本颜色 */
+}
+
+/* 分隔线 */
+.divider {
+    border-top: 1px solid #e8e8e8;
+    margin: 0 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .puzzleContentStyle {
+        width: 90%;
+        padding: 10px;
+    }
+    .answer-record-radio h3 {
+        font-size: 14px;
+    }
+    .analysis-card {
+        padding: 12px;
+    }
 }

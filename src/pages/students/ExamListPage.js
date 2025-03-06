@@ -326,7 +326,7 @@ const ExamListPage = (props) =>  {
             )}
             {showExamPaper && (
                 <div className="custom-carousel-container">
-                    <Carousel ref={examPaperCarouselRef} dots={false} swipe={false}>
+                    <Carousel ref={examPaperCarouselRef} dots={false} swipe={false} effect="fade">
                         {
                             <div className="puzzleContentStyle">
                                 <Row justify="center" align="middle" style={{ height: '100%', backgroundColor: '#f0f2f5' }}>
@@ -494,32 +494,40 @@ const ExamListPage = (props) =>  {
                                             </MathJaxContext>
                                         </Row>
 
+                                        {/* 分隔线 */}
+                                        <div className="divider" />
+
                                         <Row justify="center">
-                                            <MathJaxContext>
-                                                <MathJax>
-                                                    <Typography.Text
-                                                        type="secondary"
-                                                        style={{
-                                                            textAlign: 'left',
-                                                            display: 'block',
-                                                            width: 'fit-content'
-                                                        }}
-                                                    >
-                                                        {puzzle.analysis.replace(/{\[}解析{\]}/g, '解析')}
-                                                    </Typography.Text>
-                                                </MathJax>
-                                            </MathJaxContext>
+                                            <div className="analysis-card">
+                                                <h4>解析</h4>
+                                                <MathJaxContext>
+                                                    <MathJax>
+                                                        <p>{puzzle.analysis.replace(/{\[}解析{\]}/g, '')}</p>
+                                                    </MathJax>
+                                                </MathJaxContext>
+                                                {/* 如果有知识点数据，展示为标签 */}
+                                                {puzzle.knowledgePoints && puzzle.knowledgePoints.length > 0 && (
+                                                    <div className="knowledge-tags">
+                                                        <h4>知识点</h4>
+                                                        <Tag>{puzzle.knowledgePoints.replace(/{\[}知识点{\]}/g, '')}</Tag>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </Row>
                                     </div>
                                 ))
                             }
                     </Carousel>
 
-                    <Button className="carousel-button prev-button" onClick={() => {handlePrev("examRecord")}}>
-                        <LeftOutlined />
+                    <Button className="carousel-button prev-button" onClick={() => {
+                        handlePrev("examRecord")
+                    }}>
+                        <LeftOutlined/>
                     </Button>
-                    <Button className="carousel-button next-button" onClick={() => {handleNext("examRecord")}}>
-                        <RightOutlined />
+                    <Button className="carousel-button next-button" onClick={() => {
+                        handleNext("examRecord")
+                    }}>
+                        <RightOutlined/>
                     </Button>
                 </div>
             )}
